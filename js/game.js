@@ -22,8 +22,7 @@ var jumpButton;
 var bg;
 var w = 500;
 var h = 350;
-var coin;
-var coinPosition, coinX;
+var coin1, coin2, coin3;
 
 function create() {
 
@@ -65,25 +64,27 @@ function create() {
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 
-	coin = game.add.sprite(150, 200, 'starBig');
-	//coin.body.gravity.y = 10;
-	//coin.body.bounce.y = 0.3;
-	coin.anchor.setTo(0.5, 0.5);
-	game.physics.enable(coin, Phaser.Physics.ARCADE);
+	coin1 = game.add.sprite(150, 200, 'starBig');
+	coin1.anchor.setTo(0.5, 0.5);
 
-	//game.physics.enable( [ player, coin ], Phaser.Physics.ARCADE);
-	/*coinPosition = [];
-	coinPosition[0] = [[150, h/2], [w-150, h/2], [50, h-100], [w-50, h-100]];
-	coinPosition[1] = coinPosition[0].concat([[60, 100], [w-60, 100]]);
-	coinPosition[2] = coinPosition[1].concat([[130, 50], [w-130, 50], [200, h-60], [w-200, h-60]]);
-	coinX = 0;*/
+	coin2 = game.add.sprite(650, 200, 'starBig');
+	coin2.anchor.setTo(0.5, 0.5);
+
+	coin3 = game.add.sprite(150, 500, 'starBig');
+	coin3.anchor.setTo(0.5, 0.5);
+
+	game.physics.enable([coin1, coin2, coin3], Phaser.Physics.ARCADE);
 }
 
 function update() {
 
 	game.physics.arcade.collide(player, layer);
-	game.physics.arcade.collide(player, coin);
-	//game.physics.arcade.overlap(player, coin, takeCoin, null, this);
+	game.physics.arcade.collide(coin1, layer);
+	game.physics.arcade.collide(coin2, layer);
+	game.physics.arcade.collide(coin3, layer);
+	game.physics.arcade.overlap(player, coin1, takeCoin, null, this);
+	game.physics.arcade.overlap(player, coin2, takeCoin, null, this);
+	game.physics.arcade.overlap(player, coin3, takeCoin, null, this);
 
 	player.body.velocity.x = 0;
 
@@ -134,21 +135,9 @@ function update() {
 
 }
 
-function blabla() {
-	return true;
-}
-
 function takeCoin(player, coin) {
-	console.log('takeCoin');
-	/*var tab = this.coinPosition[i];
-	this.coin_s.play('', 0, 0.15);
-	var ra = rand(tab.length);
-
-	if (ra == this.coinX) ra = (ra + 1) % tab.length;
-
-	this.coinX = ra;
-	coin.reset(tab[ra][0], tab[ra][1]);
-	this.oneCoin = true;*/
+	console.log('coin taken: ', coin);
+	coin.kill();
 }
 
 function render () {
