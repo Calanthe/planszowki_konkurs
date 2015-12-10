@@ -151,7 +151,7 @@ function update() {
 }
 
 function collide(player, enemy) {
-	if (!player.body.touching.down && player.bottomRight.y < enemy.topRight.y+10 && enemy.alive && player.alive) {
+	if (!player.body.touching.down && player._bounds.bottomRight.y < enemy._bounds.topRight.y+10 && enemy.alive && player.alive) {
 		player.body.velocity.y = -150;
 		enemyDie(enemy);
 	}
