@@ -151,7 +151,7 @@ function update() {
 }
 
 function collide(player, enemy) {
-	if (!player.body.touching.down && player._bounds.bottomRight.y < enemy._bounds.topRight.y+10 && enemy.alive && player.alive) {
+	if (player.body.touching.down) {//&& player._bounds.bottomRight.y < enemy._bounds.topRight.y+10 && enemy.alive && player.alive) {
 		player.body.velocity.y = -150;
 		enemyDie(enemy);
 	}
@@ -159,11 +159,32 @@ function collide(player, enemy) {
 }
 
 function enemyDie(enemy) {
-	console.log('enemyDie: ', enemy);
+	console.log('enemyDie');
+	var tmp = game.add.tween(enemy.scale).to({y : 0}, 150, Phaser.Easing.Linear.None).start();
+	tmp.onComplete.add(function(){
+		enemy.kill();
+	});
+	enemy.alive = false;
 }
 
 function playerDie() {
 	console.log('playerDie');
+	if (player.alive) {
+		player.alive = false;
+		var tmp = game.add.tween(player).to({y : h+10}, 500, Phaser.Easing.Linear.None).start();
+		game.add.tween(player).to({angle : 360}, 500, Phaser.Easing.Linear.None).start();
+		tmp.onComplete.add(playerInit, this);
+		//this.updateBestScore();
+		enemies.forEachAlive(function(e){
+			enemyDie(e, true)
+		}, this);
+	}
+}
+
+function playerInit() {
+	player.x = w/2;
+	player.y = h/2;
+	player.alive = true;
 }
 
 function updateEnemy(enemy) {
