@@ -2,13 +2,12 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 
 function preload() {
 
-	game.load.tilemap('level', 'assets/level.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('tiles-1', 'assets/tiles-1.png');
 	game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-	game.load.spritesheet('droid', 'assets/droid.png', 32, 32);
+	game.load.spritesheet('enemy', 'assets/enemy.gif', 32, 32);
 	game.load.image('starSmall', 'assets/star.png');
 	game.load.image('starBig', 'assets/star2.png');
-	game.load.image('background', 'assets/background2.png');
+	game.load.image('background', 'assets/bg.gif');
+	game.load.image('brick', 'assets/brick.gif');
 
 }
 var map;
@@ -24,6 +23,7 @@ var w = 800;
 var h = 600;
 var coin1, coin2, coin3;
 var half = 1;
+var platforms;
 
 function rand(num){
 	return Math.floor(Math.random() * num)
@@ -38,18 +38,18 @@ function create() {
 	bg = game.add.tileSprite(0, 0, 800, 600, 'background');
 	bg.fixedToCamera = true;
 
-	map = game.add.tilemap('level');
+	//map = game.add.tilemap('level');
 
-	map.addTilesetImage('tiles-1');
+	//map.addTilesetImage('tiles-1');
 
-	map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+	//map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
-	layer = map.createLayer('Tile Layer 1');
+	//layer = map.createLayer('Tile Layer 1');
 
 	//  Un-comment this on to see the collision tiles
 	// layer.debug = true;
 
-	layer.resizeWorld();
+	//layer.resizeWorld();
 
 	game.physics.arcade.gravity.y = 250;
 
@@ -57,6 +57,8 @@ function create() {
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
 	player.body.bounce.y = 0.2;
+	player.body.gravity.y = 12;
+	player.anchor.setTo(0.5, 0.5);
 	player.body.collideWorldBounds = true;
 	player.body.setSize(20, 32, 5, 16);
 
@@ -81,21 +83,28 @@ function create() {
 	game.physics.enable([coin1, coin2, coin3], Phaser.Physics.ARCADE);
 
 	enemies = game.add.group();
-	enemies.createMultiple(3, 'droid');
+	enemies.createMultiple(3, 'enemy');
 	enemies.setAll('outOfBoundsKill', true);
 	enemyTime = 0;
+
+	buildLevel();
 }
 
 function update() {
 
-	game.physics.arcade.collide(player, layer);
+	game.physics.arcade.collide(player, platforms);
+	game.physics.arcade.collide(enemies, platforms);
+	game.physics.arcade.collide(coin1, platforms);
+	game.physics.arcade.collide(coin2, platforms);
+	game.physics.arcade.collide(coin3, platforms);
+	/*game.physics.arcade.collide(player, layer);
 	game.physics.arcade.collide(coin1, layer);
 	game.physics.arcade.collide(coin2, layer);
 	game.physics.arcade.collide(coin3, layer);
+	game.physics.arcade.collide(enemies, layer);*/
 	game.physics.arcade.overlap(player, coin1, takeCoin, null, this);
 	game.physics.arcade.overlap(player, coin2, takeCoin, null, this);
 	game.physics.arcade.overlap(player, coin3, takeCoin, null, this);
-	game.physics.arcade.collide(enemies, layer);
 	game.physics.arcade.overlap(player, enemies, collide, null, this);
 
 	enemies.forEachAlive(updateEnemy, this);
@@ -141,21 +150,68 @@ function update() {
 		}
 	}
 
-	if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
+	/*if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
 	{
 		player.body.velocity.y = -200;
 		jumpTimer = game.time.now + 750;
+	}*/
+
+	if (jumpButton.isDown && (player.body.touching.down || player.body.onFloor())) {
+		player.body.velocity.y = -200;
 	}
 
 	newEnemy();
 }
 
 function collide(player, enemy) {
-	if (player.body.touching.down) {//&& player._bounds.bottomRight.y < enemy._bounds.topRight.y+10 && enemy.alive && player.alive) {
-		player.body.velocity.y = -150;
-		enemyDie(enemy);
-	}
-	else playerDie();
+	playerDie();
+}
+
+function buildLevel() {
+	platforms = game.add.physicsGroup();
+
+	var bottom1 = platforms.create(0, h, 'brick');
+	bottom1.anchor.setTo(0, 1);
+	bottom1.scale.setTo(11, 1);
+
+	var bottom1bis = platforms.create(0, h-20, 'brick');
+	bottom1bis.anchor.setTo(0, 1);
+	bottom1bis.scale.setTo(4, 1);
+
+	var bottom2 = platforms.create(w/2+30, h, 'brick');
+	bottom2.anchor.setTo(0, 1);
+	bottom2.scale.setTo(11, 1);
+
+	var bottom2bis = platforms.create(w/2+170, h-20, 'brick');
+	bottom2bis.anchor.setTo(0, 1);
+	bottom2bis.scale.setTo(4, 1);
+
+	var top1 = platforms.create(0, 0, 'brick');
+	top1.anchor.setTo(0, 0);
+	top1.scale.setTo(9, 1);
+
+	var top2 = platforms.create(w/2+60, 0, 'brick');
+	top2.anchor.setTo(0, 0);
+	top2.scale.setTo(9, 1);
+
+	var middle1 = platforms.create(w/2, h*1/4+10, 'brick');
+	middle1.anchor.setTo(0.5, 0.5);
+	middle1.scale.setTo(14, 1);
+
+	var middle2 = platforms.create(w/2, h*3/4-10, 'brick');
+	middle2.anchor.setTo(0.5, 0.5);
+	middle2.scale.setTo(14, 1);
+
+	var middle3 = platforms.create(0, h/2, 'brick');
+	middle3.anchor.setTo(0, 0.5);
+	middle3.scale.setTo(5, 1);
+
+	var middle4 = platforms.create(w/2+150, h/2, 'brick');
+	middle4.anchor.setTo(0, 0.5);
+	middle4.scale.setTo(5, 1);
+
+	platforms.setAll('body.immovable', true);
+	platforms.setAll('body.allowGravity', false);
 }
 
 function enemyDie(enemy) {
