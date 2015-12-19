@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update});
 
 function preload() {
 
@@ -9,22 +9,16 @@ function preload() {
 	game.load.image('brick', 'assets/brick.gif');
 
 }
-var enemy1;
+var enemy1, enemy2;
 var player;
 var facing = 'left';
-var jumpTimer = 0;
 var cursors;
 var jumpButton;
 var bg;
 var w = 800;
 var h = 600;
 var tree1, tree2, tree3;
-var half = 1;
-var platforms;
-
-function rand(num){
-	return Math.floor(Math.random() * num)
-};
+var platforms, walls;
 
 function create() {
 
@@ -35,11 +29,11 @@ function create() {
 	bg = game.add.tileSprite(0, 0, 800, 600, 'background');
 	bg.fixedToCamera = true;
 
-	game.world.setBounds(0, 0, 1200, 600);
+	game.world.setBounds(0, 0, 10000, 600);
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(700, 500, 'dude');
+	player = game.add.sprite(1600, 500, 'dude');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -64,21 +58,21 @@ function create() {
 	tree2 = game.add.sprite(w + 130, h - 10, 'starBig');
 	tree2.anchor.setTo(0.5, 0.5);
 
-	/*tree3 = game.add.sprite(150, 500, 'starBig');
-	tree3.anchor.setTo(0.5, 0.5);*/
+	tree3 = game.add.sprite(2470, h - 210, 'starBig');
+	tree3.anchor.setTo(0.5, 0.5);
 
-	game.physics.enable([tree1, tree2/*, tree3*/], Phaser.Physics.ARCADE);
+	game.physics.enable([tree1, tree2, tree3], Phaser.Physics.ARCADE);
 	tree2.body.collideWorldBounds = true;
-
-	/*enemies = game.add.group();
-	enemies.createMultiple(3, 'enemy');
-	enemies.setAll('outOfBoundsKill', true);
-	enemyTime = 0;*/
 
 	enemy1 = game.add.sprite(w + 130, h - 10, 'enemy');
 	enemy1.anchor.setTo(0.5, 0.5);
 
 	createEnemy(enemy1);
+
+	enemy2 = game.add.sprite(2470, h - 210, 'enemy');
+	enemy2.anchor.setTo(0.5, 0.5);
+
+	createEnemy(enemy2);
 
 	buildLevel();
 }
@@ -86,7 +80,9 @@ function create() {
 function update() {
 
 	game.physics.arcade.collide(player, platforms);
-	//game.physics.arcade.collide(enemy1, platforms);
+	game.physics.arcade.collide(player, walls);
+	game.physics.arcade.collide(enemy1, platforms);
+	game.physics.arcade.collide(enemy2, platforms);
 	game.physics.arcade.collide(tree1, platforms);
 	game.physics.arcade.collide(tree2, platforms);
 	game.physics.arcade.collide(tree3, platforms);
@@ -94,9 +90,11 @@ function update() {
 	game.physics.arcade.overlap(player, tree2, leavePresent, null, this);
 	game.physics.arcade.overlap(player, tree3, leavePresent, null, this);
 	game.physics.arcade.overlap(player, enemy1, collide, null, this);
-	game.physics.arcade.collide(enemy1, platforms, enemyWall, null, this);
+	game.physics.arcade.overlap(player, enemy2, collide, null, this);
+	game.physics.arcade.collide(enemy1, walls, enemyWall, null, this);
+	game.physics.arcade.collide(enemy2, walls, enemyWall, null, this);
 
-	updateEnemy(enemy1);
+	updateEnemy([enemy1, enemy2]);
 
 	player.body.velocity.x = 0;
 
@@ -158,6 +156,7 @@ function collide(player, enemy) {
 
 function buildLevel() {
 	platforms = game.add.physicsGroup();
+	walls = game.add.physicsGroup();
 
 	var bar1 = platforms.create(w/4, h-60, 'brick');
 	bar1.anchor.setTo(0.5, 0.5);
@@ -167,11 +166,31 @@ function buildLevel() {
 	bar2.anchor.setTo(0.5, 0.5);
 	bar2.scale.setTo(6, 1);
 
-	var bar3 = platforms.create(w, h-20, 'brick');
-	bar3.anchor.setTo(0.5, 0.5);
+	var wall1 = walls.create(w, h-20, 'brick');
+	wall1.anchor.setTo(0.5, 0.5);
 
-	var bar4 = platforms.create(w+260, h-20, 'brick');
-	bar4.anchor.setTo(0.5, 0.5);
+	var wall2 = walls.create(w+260, h-20, 'brick');
+	wall2.anchor.setTo(0.5, 0.5);
+
+	var bar5 = platforms.create(w+500, h-50, 'brick');
+	bar5.anchor.setTo(0.5, 0.5);
+	bar5.scale.setTo(2, 1);
+
+	var bar6 = platforms.create(w+700, h-90, 'brick');
+	bar6.anchor.setTo(0.5, 0.5);
+	bar6.scale.setTo(2, 1);
+
+	var longbar7 = platforms.create(w+1300, h-140, 'brick');
+	longbar7.anchor.setTo(0.5, 0.5);
+	longbar7.scale.setTo(40, 1);
+
+	var longbar8 = platforms.create(w+1300, h-220, 'brick');
+	longbar8.anchor.setTo(0.5, 0.5);
+	longbar8.scale.setTo(40, 1);
+
+	var wall3 = walls.create(w+1690, h-180, 'brick');
+	wall3.anchor.setTo(0.5, 0.5);
+	wall3.scale.setTo(1, 4);
 
 	/*var bottom1 = platforms.create(0, h, 'brick');
 	bottom1.anchor.setTo(0, 1);
@@ -215,10 +234,12 @@ function buildLevel() {
 
 	platforms.setAll('body.immovable', true);
 	platforms.setAll('body.allowGravity', false);
+
+	walls.setAll('body.immovable', true);
+	walls.setAll('body.allowGravity', false);
 }
 
 function enemyDie(enemy) {
-	console.log('enemyDie');
 	var tmp = game.add.tween(enemy.scale).to({y : 0}, 150, Phaser.Easing.Linear.None).start();
 	tmp.onComplete.add(function(){
 		enemy.kill();
@@ -227,17 +248,25 @@ function enemyDie(enemy) {
 }
 
 function playerDie() {
-	console.log('playerDie');
 	if (player.alive) {
 		player.alive = false;
 		var tmp = game.add.tween(player).to({y : h+10}, 500, Phaser.Easing.Linear.None).start();
 		game.add.tween(player).to({angle : 360}, 500, Phaser.Easing.Linear.None).start();
 		tmp.onComplete.add(playerInit, this);
 		//this.updateBestScore();
-		enemies.forEachAlive(function(e){
-			enemyDie(e, true)
-		}, this);
+		//enemyDie(enemy1);
+		shakeScreen(10, 100);
 	}
+}
+
+function shakeScreen(i, t) {
+	game.add.tween(game.camera).to({y : i}, t, Phaser.Easing.Linear.None)
+		.to({y : -i}, t, Phaser.Easing.Linear.None)
+		.to({y : 0}, t, Phaser.Easing.Linear.None).start();
+
+	game.add.tween(game.camera).to({x : i}, t, Phaser.Easing.Linear.None)
+		.to({x : -i}, t, Phaser.Easing.Linear.None)
+		.to({x : 0}, t, Phaser.Easing.Linear.None).start();
 }
 
 function playerInit() {
@@ -246,14 +275,23 @@ function playerInit() {
 	player.alive = true;
 }
 
-function updateEnemy(enemy) {
-	if (enemy.body.velocity.x == 0) {
+function updateEnemy(enemies) {
+	enemies.forEach(function(enemy){
+		if (enemy.body.velocity.x == 0) {
+			enemy.body.velocity.x = -70;
+			enemy.animations.play('walk');
+
+			if (enemy.scale.x == -1)
+				enemy.body.velocity.x *= -1;
+		}
+	});
+	/*if (enemy.body.velocity.x == 0) {
 		enemy.body.velocity.x = -70;
 		enemy.animations.play('walk');
 
 		if (enemy.scale.x == -1)
 			enemy.body.velocity.x *= -1;
-	}
+	}*/
 }
 
 function createEnemy(enemy) {
@@ -273,28 +311,7 @@ function leavePresent(player, tree) {
 }
 
 function enemyWall(enemy, wall) {
-	enemy.body.velocity.x *= -1;
-
 	var scaleX = enemy.scale.x * -1;
-
+	enemy.body.velocity.x *= -1;
 	enemy.scale.setTo(scaleX, 1);
-
-	console.log('enemyWall', enemy);
-
-	//if (enemy.x < h/2) {
-	//	enemy.scale.setTo(-1, 1);
-	//	enemy.x = 50+enemy.width/2+1;
-//	}
-//	else {
-	//	enemy.scale.setTo(-1, 1);
-		//enemy.x = w-20-enemy.width/2-1;
-//	}
-}
-
-function render () {
-
-	// game.debug.text(game.time.physicsElapsed, 32, 32);
-	// game.debug.body(player);
-	// game.debug.bodyInfo(player, 16, 24);
-
 }
