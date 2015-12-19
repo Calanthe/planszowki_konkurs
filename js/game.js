@@ -39,7 +39,7 @@ function create() {
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(32, 32, 'dude');
+	player = game.add.sprite(700, 500, 'dude');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -86,7 +86,7 @@ function create() {
 function update() {
 
 	game.physics.arcade.collide(player, platforms);
-	game.physics.arcade.collide(enemy1, platforms);
+	//game.physics.arcade.collide(enemy1, platforms);
 	game.physics.arcade.collide(tree1, platforms);
 	game.physics.arcade.collide(tree2, platforms);
 	game.physics.arcade.collide(tree3, platforms);
@@ -94,6 +94,7 @@ function update() {
 	game.physics.arcade.overlap(player, tree2, leavePresent, null, this);
 	game.physics.arcade.overlap(player, tree3, leavePresent, null, this);
 	game.physics.arcade.overlap(player, enemy1, collide, null, this);
+	game.physics.arcade.collide(enemy1, platforms, enemyWall, null, this);
 
 	updateEnemy(enemy1);
 
@@ -260,15 +261,8 @@ function createEnemy(enemy) {
 	enemy.anchor.setTo(0.5, 1);
 	game.physics.enable(enemy, Phaser.Physics.ARCADE);
 	enemy.body.gravity.y = 5;
-	enemy.body.velocity.x = 0;
+	enemy.body.velocity.x = -100;
 	enemy.animations.add('walk', [0, 1], 3, true);
-
-	if (half == 1) {
-		enemy.scale.setTo(-1, 1);
-		half = 0;
-	} else {
-		half = 1;
-	}
 
 	enemy.body.collideWorldBounds = true;
 }
@@ -276,6 +270,25 @@ function createEnemy(enemy) {
 function leavePresent(player, tree) {
 	console.log('tree: ', tree);
 	tree.kill();
+}
+
+function enemyWall(enemy, wall) {
+	enemy.body.velocity.x *= -1;
+
+	var scaleX = enemy.scale.x * -1;
+
+	enemy.scale.setTo(scaleX, 1);
+
+	console.log('enemyWall', enemy);
+
+	//if (enemy.x < h/2) {
+	//	enemy.scale.setTo(-1, 1);
+	//	enemy.x = 50+enemy.width/2+1;
+//	}
+//	else {
+	//	enemy.scale.setTo(-1, 1);
+		//enemy.x = w-20-enemy.width/2-1;
+//	}
 }
 
 function render () {
