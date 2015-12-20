@@ -2,9 +2,9 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 
 function preload() {
 
-	game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+	game.load.spritesheet('santa', 'assets/santa.png', 27, 48);
 	game.load.spritesheet('enemy', 'assets/enemy.gif', 32, 32);
-	game.load.image('starBig', 'assets/star2.png');
+	game.load.image('tree', 'assets/tree.gif');
 	game.load.image('background', 'assets/bg.gif');
 	game.load.image('brick', 'assets/brick.gif');
 
@@ -34,7 +34,7 @@ function create() {
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(w-320, h-260, 'dude');
+	player = game.add.sprite(w-320, h-260, 'santa');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -44,28 +44,30 @@ function create() {
 	player.body.collideWorldBounds = true;
 	player.body.setSize(20, 32, 5, 16);
 
-	player.animations.add('left', [0, 1, 2, 3], 10, true);
+	player.animations.add('walk', [1, 2], 6, true);
+
+	/*player.animations.add('left', [0, 1, 2, 3], 10, true);
 	player.animations.add('turn', [4], 20, true);
-	player.animations.add('right', [5, 6, 7, 8], 10, true);
+	player.animations.add('right', [5, 6, 7, 8], 10, true);*/
 
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 
-	tree1 = game.add.sprite(w/2 + 20, h - 140, 'starBig');
+	tree1 = game.add.sprite(w/2 + 20, h - 150, 'tree');
 	tree1.anchor.setTo(0.5, 0.5);
 
-	tree2 = game.add.sprite(w + 130, h - 10, 'starBig');
+	tree2 = game.add.sprite(w + 130, h - 10, 'tree');
 	tree2.anchor.setTo(0.5, 0.5);
 
-	tree3 = game.add.sprite(2460, h - 210, 'starBig');
+	tree3 = game.add.sprite(2460, h - 210, 'tree');
 	tree3.anchor.setTo(0.5, 0.5);
 
-	tree4 = game.add.sprite(1800, h - 250, 'starBig');
+	tree4 = game.add.sprite(1800, h - 250, 'tree');
 	tree4.anchor.setTo(0.5, 0.5);
 
-	tree5 = game.add.sprite(w - 230, h - 500, 'starBig');
+	tree5 = game.add.sprite(w - 230, h - 510, 'tree');
 	tree5.anchor.setTo(0.5, 0.5);
 
 	game.physics.enable([tree1, tree2, tree3, tree4, tree5], Phaser.Physics.ARCADE);
@@ -131,7 +133,7 @@ function update() {
 
 		if (facing != 'left')
 		{
-			player.animations.play('left');
+			player.animations.play('walk');
 			facing = 'left';
 		}
 	}
@@ -141,7 +143,7 @@ function update() {
 
 		if (facing != 'right')
 		{
-			player.animations.play('right');
+			player.animations.play('walk');
 			facing = 'right';
 		}
 	}
