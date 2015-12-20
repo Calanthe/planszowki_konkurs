@@ -6,12 +6,12 @@ function preload() {
 	game.load.spritesheet('enemy', 'assets/enemy.gif', 32, 32);
 	game.load.image('tree', 'assets/tree.gif');
 	game.load.image('background', 'assets/bg.gif');
-	game.load.image('brick', 'assets/brick.gif');
+	game.load.image('brick', 'assets/brick.gif', 20, 20);
 
 }
 var enemy1, enemy2, enemy3, enemy4;
 var player;
-var facing = 'left';
+var facing = 'right';
 var cursors;
 var jumpButton;
 var bg;
@@ -34,21 +34,16 @@ function create() {
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(w-320, h-260, 'santa');
+	player = game.add.sprite(1840, h-260, 'santa');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
-	player.body.bounce.y = 0.2;
+	player.body.bounce.y = 0.1;
 	player.body.gravity.y = 12;
 	player.anchor.setTo(0.5, 0.5);
 	player.body.collideWorldBounds = true;
-	player.body.setSize(20, 32, 5, 16);
 
 	player.animations.add('walk', [1, 2], 6, true);
-
-	/*player.animations.add('left', [0, 1, 2, 3], 10, true);
-	player.animations.add('turn', [4], 20, true);
-	player.animations.add('right', [5, 6, 7, 8], 10, true);*/
 
 	game.camera.follow(player);
 
@@ -64,7 +59,7 @@ function create() {
 	tree3 = game.add.sprite(2460, h - 210, 'tree');
 	tree3.anchor.setTo(0.5, 0.5);
 
-	tree4 = game.add.sprite(1800, h - 250, 'tree');
+	tree4 = game.add.sprite(1800, h - 260, 'tree');
 	tree4.anchor.setTo(0.5, 0.5);
 
 	tree5 = game.add.sprite(w - 230, h - 510, 'tree');
@@ -134,6 +129,7 @@ function update() {
 		if (facing != 'left')
 		{
 			player.animations.play('walk');
+			player.scale.setTo(-1, 1);
 			facing = 'left';
 		}
 	}
@@ -144,6 +140,7 @@ function update() {
 		if (facing != 'right')
 		{
 			player.animations.play('walk');
+			player.scale.setTo(1, 1);
 			facing = 'right';
 		}
 	}
@@ -166,18 +163,10 @@ function update() {
 		}
 	}
 
-	/*if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
-	{
-		player.body.velocity.y = -200;
-		jumpTimer = game.time.now + 750;
-	}*/
-
 	if (jumpButton.isDown && (player.body.touching.down || player.body.onFloor()) && game.time.now > jumpTimer) {
 		player.body.velocity.y = -200;
 		jumpTimer = game.time.now + 750;
 	}
-
-	//newEnemy();
 }
 
 function collide(player, enemy) {
@@ -206,23 +195,23 @@ function buildLevel() {
 
 	var bar5 = platforms.create(w+500, h-50, 'brick');
 	bar5.anchor.setTo(0.5, 0.5);
-	bar5.scale.setTo(2, 1);
+	bar5.scale.setTo(3, 1);
 
-	var bar6 = platforms.create(w+700, h-90, 'brick');
+	var bar6 = platforms.create(w+730, h-90, 'brick');
 	bar6.anchor.setTo(0.5, 0.5);
-	bar6.scale.setTo(2, 1);
+	bar6.scale.setTo(3, 1);
 
 	var longbar7 = platforms.create(w+1300, h-110, 'brick');
 	longbar7.anchor.setTo(0.5, 0.5);
 	longbar7.scale.setTo(40, 1);
 
-	var longbar8 = platforms.create(w+1280, h-220, 'brick');
+	var longbar8 = platforms.create(w+1290, h-230, 'brick');
 	longbar8.anchor.setTo(0.5, 0.5);
-	longbar8.scale.setTo(40, 1);
+	longbar8.scale.setTo(41, 1);
 
 	var wall3 = walls.create(w+1690, h-160, 'brick');
 	wall3.anchor.setTo(0.5, 0.5);
-	wall3.scale.setTo(1, 5);
+	wall3.scale.setTo(1, 6);
 
 	var wall4 = walls.create(w+910, h-130, 'brick');
 	wall4.anchor.setTo(0.5, 0.5);
