@@ -34,7 +34,7 @@ function create() {
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(1840, h-260, 'santa');
+	player = game.add.sprite(20, h, 'santa');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -278,8 +278,8 @@ function shakeScreen(i, t) {
 }
 
 function playerInit() {
-	player.x = w/2;
-	player.y = h/2;
+	player.x = 20;
+	player.y = h;
 	player.alive = true;
 }
 
