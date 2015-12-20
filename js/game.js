@@ -15,6 +15,7 @@ var facing = 'left';
 var cursors;
 var jumpButton;
 var bg;
+var jumpTimer = 0;
 var w = 800;
 var h = 600;
 var tree1, tree2, tree3, tree4, tree5;
@@ -169,8 +170,9 @@ function update() {
 		jumpTimer = game.time.now + 750;
 	}*/
 
-	if (jumpButton.isDown && (player.body.touching.down || player.body.onFloor())) {
+	if (jumpButton.isDown && (player.body.touching.down || player.body.onFloor()) && game.time.now > jumpTimer) {
 		player.body.velocity.y = -200;
+		jumpTimer = game.time.now + 750;
 	}
 
 	//newEnemy();
@@ -194,9 +196,11 @@ function buildLevel() {
 
 	var wall1 = walls.create(w, h-20, 'brick');
 	wall1.anchor.setTo(0.5, 0.5);
+	wall1.scale.setTo(1, 2);
 
 	var wall2 = walls.create(w+260, h-20, 'brick');
 	wall2.anchor.setTo(0.5, 0.5);
+	wall2.scale.setTo(1, 2);
 
 	var bar5 = platforms.create(w+500, h-50, 'brick');
 	bar5.anchor.setTo(0.5, 0.5);
