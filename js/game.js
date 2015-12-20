@@ -17,7 +17,7 @@ var jumpButton;
 var bg;
 var w = 800;
 var h = 600;
-var tree1, tree2, tree3, tree4;
+var tree1, tree2, tree3, tree4, tree5;
 var platforms, walls;
 
 function create() {
@@ -33,7 +33,7 @@ function create() {
 
 	game.physics.arcade.gravity.y = 250;
 
-	player = game.add.sprite(2300, 500, 'dude');
+	player = game.add.sprite(w-320, h-260, 'dude');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -61,10 +61,13 @@ function create() {
 	tree3 = game.add.sprite(2460, h - 210, 'starBig');
 	tree3.anchor.setTo(0.5, 0.5);
 
-	tree4 = game.add.sprite(1800, h - 240, 'starBig');
+	tree4 = game.add.sprite(1800, h - 250, 'starBig');
 	tree4.anchor.setTo(0.5, 0.5);
 
-	game.physics.enable([tree1, tree2, tree3], Phaser.Physics.ARCADE);
+	tree5 = game.add.sprite(w - 230, h - 500, 'starBig');
+	tree5.anchor.setTo(0.5, 0.5);
+
+	game.physics.enable([tree1, tree2, tree3, tree4, tree5], Phaser.Physics.ARCADE);
 	tree2.body.collideWorldBounds = true;
 
 	enemy1 = game.add.sprite(w + 130, h - 10, 'enemy');
@@ -101,9 +104,13 @@ function update() {
 	game.physics.arcade.collide(tree1, platforms);
 	game.physics.arcade.collide(tree2, platforms);
 	game.physics.arcade.collide(tree3, platforms);
+	game.physics.arcade.collide(tree4, platforms);
+	game.physics.arcade.collide(tree5, platforms);
 	game.physics.arcade.overlap(player, tree1, leavePresent, null, this);
 	game.physics.arcade.overlap(player, tree2, leavePresent, null, this);
 	game.physics.arcade.overlap(player, tree3, leavePresent, null, this);
+	game.physics.arcade.overlap(player, tree4, leavePresent, null, this);
+	game.physics.arcade.overlap(player, tree5, leavePresent, null, this);
 	game.physics.arcade.overlap(player, enemy1, collide, null, this);
 	game.physics.arcade.overlap(player, enemy2, collide, null, this);
 	game.physics.arcade.overlap(player, enemy3, collide, null, this);
@@ -203,7 +210,7 @@ function buildLevel() {
 	longbar7.anchor.setTo(0.5, 0.5);
 	longbar7.scale.setTo(40, 1);
 
-	var longbar8 = platforms.create(w+1300, h-220, 'brick');
+	var longbar8 = platforms.create(w+1280, h-220, 'brick');
 	longbar8.anchor.setTo(0.5, 0.5);
 	longbar8.scale.setTo(40, 1);
 
@@ -227,6 +234,25 @@ function buildLevel() {
 	wall7.anchor.setTo(0.5, 0.5);
 	wall7.scale.setTo(1, 1);
 
+	var highbar1 = platforms.create(w+710, h-290, 'brick');
+	highbar1.anchor.setTo(0.5, 0.5);
+	highbar1.scale.setTo(6, 1);
+
+	var highbar2 = platforms.create(w+450, h-350, 'brick');
+	highbar2.anchor.setTo(0.5, 0.5);
+	highbar2.scale.setTo(4, 1);
+
+	var highbar3 = platforms.create(w+190, h-380, 'brick');
+	highbar3.anchor.setTo(0.5, 0.5);
+	highbar3.scale.setTo(2, 1);
+
+	var highbar4 = platforms.create(w-20, h-420, 'brick');
+	highbar4.anchor.setTo(0.5, 0.5);
+	highbar4.scale.setTo(1, 1);
+
+	var highbar5 = platforms.create(w-200, h-480, 'brick');
+	highbar5.anchor.setTo(0.5, 0.5);
+	highbar5.scale.setTo(5, 1);
 
 	platforms.setAll('body.immovable', true);
 	platforms.setAll('body.allowGravity', false);
