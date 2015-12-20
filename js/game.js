@@ -32,8 +32,8 @@ function create() {
 
 	game.world.setBounds(0, 0, 2640, 600);
 
-	game.physics.arcade.gravity.y = 250;
-
+	game.physics.arcade.gravity.y = 200;
+	
 	player = game.add.sprite(20, h, 'santa');
 	game.camera.follow(player);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -219,7 +219,7 @@ function buildLevel() {
 
 	var wall5 = walls.create(w+1690, h, 'brick');
 	wall5.anchor.setTo(0.5, 0.5);
-	wall5.scale.setTo(1, 5);
+	wall5.scale.setTo(1, 4);
 
 	var wall6 = walls.create(w+1830, h, 'brick');
 	wall6.anchor.setTo(0.5, 0.5);
