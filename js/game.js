@@ -12,6 +12,9 @@ var w = 800;
 var h = 600;
 var tree1, tree2, tree3, tree4, tree5;
 var platforms, walls;
+var labelScore;
+var score = 0;
+var boardLabel, boardDesc;
 
 Game.Load = function (game) { };
 
@@ -61,7 +64,6 @@ Game.Play = function (game) { };
 
 Game.Play.prototype = {
 	create: function () {
-
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		game.stage.backgroundColor = '#000000';
@@ -75,7 +77,11 @@ Game.Play.prototype = {
 
 		player = game.add.sprite(20, h, 'santa');
 		game.camera.follow(player);
+
 		game.physics.enable(player, Phaser.Physics.ARCADE);
+
+		labelScore = game.add.text(30, 30, 'Choinki: ' + score + '/5', {font: '16px Arial', fill: '#fff'});
+		labelScore.fixedToCamera = true;
 
 		player.body.bounce.y = 0.1;
 		player.body.gravity.y = 12;
@@ -127,9 +133,11 @@ Game.Play.prototype = {
 		this.createEnemy(enemy4);
 
 		this.buildLevel();
+
+		game.input.onDown.add(this.unpause, self);
 	},
 
-	update: function() {
+	update: function () {
 		game.physics.arcade.collide(player, platforms);
 		game.physics.arcade.collide(player, walls);
 		game.physics.arcade.collide(enemy1, platforms);
@@ -159,40 +167,32 @@ Game.Play.prototype = {
 
 		player.body.velocity.x = 0;
 
-		if (cursors.left.isDown)
-		{
+		if (cursors.left.isDown) {
 			player.body.velocity.x = -150;
 
-			if (facing != 'left')
-			{
+			if (facing != 'left') {
 				player.animations.play('walk');
 				player.scale.setTo(-1, 1);
 				facing = 'left';
 			}
 		}
-		else if (cursors.right.isDown)
-		{
+		else if (cursors.right.isDown) {
 			player.body.velocity.x = 150;
 
-			if (facing != 'right')
-			{
+			if (facing != 'right') {
 				player.animations.play('walk');
 				player.scale.setTo(1, 1);
 				facing = 'right';
 			}
 		}
-		else
-		{
-			if (facing != 'idle')
-			{
+		else {
+			if (facing != 'idle') {
 				player.animations.stop();
 
-				if (facing == 'left')
-				{
+				if (facing == 'left') {
 					player.frame = 0;
 				}
-				else
-				{
+				else {
 					player.frame = 5;
 				}
 
@@ -210,79 +210,79 @@ Game.Play.prototype = {
 		this.playerDie();
 	},
 
-	buildLevel: function() {
+	buildLevel: function () {
 		platforms = game.add.physicsGroup();
 		walls = game.add.physicsGroup();
 
-		var bar1 = platforms.create(w/4, h-60, 'brick');
+		var bar1 = platforms.create(w / 4, h - 60, 'brick');
 		bar1.anchor.setTo(0.5, 0.5);
 		bar1.scale.setTo(6, 1);
 
-		var bar2 = platforms.create(w/2, h-120, 'brick');
+		var bar2 = platforms.create(w / 2, h - 120, 'brick');
 		bar2.anchor.setTo(0.5, 0.5);
 		bar2.scale.setTo(6, 1);
 
-		var wall1 = walls.create(w, h-20, 'brick');
+		var wall1 = walls.create(w, h - 20, 'brick');
 		wall1.anchor.setTo(0.5, 0.5);
 		wall1.scale.setTo(1, 2);
 
-		var wall2 = walls.create(w+260, h-20, 'brick');
+		var wall2 = walls.create(w + 260, h - 20, 'brick');
 		wall2.anchor.setTo(0.5, 0.5);
 		wall2.scale.setTo(1, 2);
 
-		var bar5 = platforms.create(w+500, h-50, 'brick');
+		var bar5 = platforms.create(w + 500, h - 50, 'brick');
 		bar5.anchor.setTo(0.5, 0.5);
 		bar5.scale.setTo(3, 1);
 
-		var bar6 = platforms.create(w+730, h-90, 'brick');
+		var bar6 = platforms.create(w + 730, h - 90, 'brick');
 		bar6.anchor.setTo(0.5, 0.5);
 		bar6.scale.setTo(3, 1);
 
-		var longbar7 = platforms.create(w+1300, h-110, 'brick');
+		var longbar7 = platforms.create(w + 1300, h - 110, 'brick');
 		longbar7.anchor.setTo(0.5, 0.5);
 		longbar7.scale.setTo(40, 1);
 
-		var longbar8 = platforms.create(w+1290, h-230, 'brick');
+		var longbar8 = platforms.create(w + 1290, h - 230, 'brick');
 		longbar8.anchor.setTo(0.5, 0.5);
 		longbar8.scale.setTo(41, 1);
 
-		var wall3 = walls.create(w+1690, h-160, 'brick');
+		var wall3 = walls.create(w + 1690, h - 160, 'brick');
 		wall3.anchor.setTo(0.5, 0.5);
 		wall3.scale.setTo(1, 6);
 
-		var wall4 = walls.create(w+910, h-130, 'brick');
+		var wall4 = walls.create(w + 910, h - 130, 'brick');
 		wall4.anchor.setTo(0.5, 0.5);
 		wall4.scale.setTo(1, 3);
 
-		var wall5 = walls.create(w+1690, h, 'brick');
+		var wall5 = walls.create(w + 1690, h, 'brick');
 		wall5.anchor.setTo(0.5, 0.5);
 		wall5.scale.setTo(1, 4);
 
-		var wall6 = walls.create(w+1830, h, 'brick');
+		var wall6 = walls.create(w + 1830, h, 'brick');
 		wall6.anchor.setTo(0.5, 0.5);
 		wall6.scale.setTo(1, 11);
 
-		var wall7 = walls.create(w+1710, h-178, 'brick');
+		var wall7 = walls.create(w + 1710, h - 178, 'brick');
 		wall7.anchor.setTo(0.5, 0.5);
 		wall7.scale.setTo(1, 1);
 
-		var highbar1 = platforms.create(w+710, h-290, 'brick');
+		var highbar1 = platforms.create(w + 710, h - 290, 'brick');
 		highbar1.anchor.setTo(0.5, 0.5);
 		highbar1.scale.setTo(6, 1);
 
-		var highbar2 = platforms.create(w+450, h-350, 'brick');
+		var highbar2 = platforms.create(w + 450, h - 350, 'brick');
 		highbar2.anchor.setTo(0.5, 0.5);
 		highbar2.scale.setTo(4, 1);
 
-		var highbar3 = platforms.create(w+190, h-380, 'brick');
+		var highbar3 = platforms.create(w + 190, h - 380, 'brick');
 		highbar3.anchor.setTo(0.5, 0.5);
 		highbar3.scale.setTo(2, 1);
 
-		var highbar4 = platforms.create(w-20, h-420, 'brick');
+		var highbar4 = platforms.create(w - 20, h - 420, 'brick');
 		highbar4.anchor.setTo(0.5, 0.5);
 		highbar4.scale.setTo(1, 1);
 
-		var highbar5 = platforms.create(w-200, h-480, 'brick');
+		var highbar5 = platforms.create(w - 200, h - 480, 'brick');
 		highbar5.anchor.setTo(0.5, 0.5);
 		highbar5.scale.setTo(5, 1);
 
@@ -293,35 +293,42 @@ Game.Play.prototype = {
 		walls.setAll('body.allowGravity', false);
 	},
 
-	playerDie: function() {
+	playerDie: function () {
 		if (player.alive) {
 			player.alive = false;
-			var tmp = game.add.tween(player).to({y : h+10}, 500, Phaser.Easing.Linear.None).start();
-			game.add.tween(player).to({angle : 360}, 500, Phaser.Easing.Linear.None).start();
+			var tmp = game.add.tween(player).to({y: h + 10}, 500, Phaser.Easing.Linear.None).start();
+			game.add.tween(player).to({angle: 360}, 500, Phaser.Easing.Linear.None).start();
 			tmp.onComplete.add(this.playerInit, this);
-			//this.updateBestScore();
 			this.shakeScreen(10, 100);
 		}
 	},
 
-	shakeScreen: function(i, t) {
-		game.add.tween(game.camera).to({y : i}, t, Phaser.Easing.Linear.None)
-			.to({y : -i}, t, Phaser.Easing.Linear.None)
-			.to({y : 0}, t, Phaser.Easing.Linear.None).start();
-
-		game.add.tween(game.camera).to({x : i}, t, Phaser.Easing.Linear.None)
-			.to({x : -i}, t, Phaser.Easing.Linear.None)
-			.to({x : 0}, t, Phaser.Easing.Linear.None).start();
+	updateScore: function () {
+		score += 1;
+		labelScore.setText('Choinki: ' + score + '/5');
+		if (score === 5) {
+			game.state.start('End');
+		}
 	},
 
-	playerInit: function() {
+	shakeScreen: function (i, t) {
+		game.add.tween(game.camera).to({y: i}, t, Phaser.Easing.Linear.None)
+			.to({y: -i}, t, Phaser.Easing.Linear.None)
+			.to({y: 0}, t, Phaser.Easing.Linear.None).start();
+
+		game.add.tween(game.camera).to({x: i}, t, Phaser.Easing.Linear.None)
+			.to({x: -i}, t, Phaser.Easing.Linear.None)
+			.to({x: 0}, t, Phaser.Easing.Linear.None).start();
+	},
+
+	playerInit: function () {
 		player.x = 20;
 		player.y = h;
 		player.alive = true;
 	},
 
-	updateEnemy: function(enemies) {
-		enemies.forEach(function(enemy){
+	updateEnemy: function (enemies) {
+		enemies.forEach(function (enemy) {
 			if (enemy.body.velocity.x == 0) {
 				enemy.body.velocity.x = -70;
 				enemy.animations.play('walk');
@@ -332,7 +339,7 @@ Game.Play.prototype = {
 		});
 	},
 
-	createEnemy: function(enemy) {
+	createEnemy: function (enemy) {
 		enemy.scale.setTo(1, 1);
 		enemy.anchor.setTo(0.5, 1);
 		game.physics.enable(enemy, Phaser.Physics.ARCADE);
@@ -343,21 +350,69 @@ Game.Play.prototype = {
 		enemy.body.collideWorldBounds = true;
 	},
 
-	leavePresent: function(player, tree) {
-		console.log('tree: ', tree);
+	leavePresent: function (player, tree) {
+		var text = [
+			'Gry planszowe rozwijają umiejętności społeczne, stwarzają okazję do bezpośredniego, osobistego kontaktu z innymi ludźmi.',
+			'Wspólna gra jest świetną okazją do wspólnych rozmów, uwolnienia się od napięć i emocji.',
+			'Zwłaszcza u małych dzieci, gry planszowe rozwijają mowę, uczą logicznego myślenia i pomagają zwiększyć koncentrację.',
+			'Gry planszowe wywołują calą gamę emocji, zarówno tych potywnych jak i negatywnych. Uczą konfrontacji z nimi.',
+			'Gry planszowe, zwłaszcza te dydaktyczne odgrywają ważną rolę w kształtowaniu pojęć oraz utrwalaniu zdobytej wiedzy.'
+		];
+		game.paused = true;
+
+		boardDesc = game.add.text(w / 2, 280, text[score], {font: '30px Arial', fill: '#fff', backgroundColor: '#2A1AA5', wordWrap: true, wordWrapWidth: 500 });
+		boardDesc.anchor.setTo(0.5, 0.5);
+		boardDesc.fixedToCamera = true;
+
+		boardLabel = game.add.text(w / 2, h - 150, 'Kliknij gdziekolwiek by zamknąć wiadomość', {
+			font: '18px Arial',
+			fill: '#fff'
+		});
+		boardLabel.anchor.setTo(0.5, 0.5);
+		boardLabel.fixedToCamera = true;
+
 		tree.kill();
+		this.updateScore();
 	},
 
-	enemyWall: function(enemy, wall) {
+	enemyWall: function (enemy, wall) {
 		var scaleX = enemy.scale.x * -1;
 		enemy.body.velocity.x *= -1;
 		enemy.scale.setTo(scaleX, 1);
+	},
+
+	unpause: function (event) {
+		if (game.paused) {
+			boardDesc.destroy();
+			boardLabel.destroy();
+
+			game.paused = false;
+		}
 	}
-}
+};
+
+Game.End = function (game) { };
+
+Game.End.prototype = {
+	create: function () {
+		game.stage.backgroundColor = '#2A1AA5';
+		game.camera.follow(null);
+		game.camera.setPosition(0,0);
+
+		var label1 = game.add.text(w/2, 150, 'Gratulacje!', { font: '35px Arial', fill: '#fff', align: 'center' });
+		label1.anchor.setTo(0.5, 0.5);
+
+		var label2 = game.add.text(w/2, h-400, 'Udało Ci się dotrzeć do wszystkich choinek :)', { font: '25px Arial', fill: '#fff', align: 'center' });
+		label2.anchor.setTo(0.5, 0.5);
+
+		var label3 = game.add.text(w/2, h-100, 'Odświerz stronę by zagrać jeszcze raz.', { font: '25px Arial', fill: '#fff', align: 'center' });
+		label3.anchor.setTo(0.5, 0.5);
+	}
+};
 
 game.state.add('Load', Game.Load);
 game.state.add('Menu', Game.Menu);
-//game.state.add('Endd', Game.Endd);
 game.state.add('Play', Game.Play);
+game.state.add('End', Game.End);
 
 game.state.start('Load');
