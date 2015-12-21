@@ -360,11 +360,11 @@ Game.Play.prototype = {
 		];
 		game.paused = true;
 
-		boardDesc = game.add.text(w / 2, 280, text[score], {font: '30px Arial', fill: '#fff', backgroundColor: '#2A1AA5', wordWrap: true, wordWrapWidth: 500 });
+		boardDesc = game.add.text(w / 2, 200, text[score], {font: '30px Arial', fill: '#fff', backgroundColor: '#2A1AA5', wordWrap: true, wordWrapWidth: 500 });
 		boardDesc.anchor.setTo(0.5, 0.5);
 		boardDesc.fixedToCamera = true;
 
-		boardLabel = game.add.text(w / 2, h - 150, 'Kliknij gdziekolwiek by zamknąć wiadomość', {
+		boardLabel = game.add.text(w / 2, h - 280, 'Kliknij gdziekolwiek by zamknąć wiadomość', {
 			font: '18px Arial',
 			fill: '#fff'
 		});
